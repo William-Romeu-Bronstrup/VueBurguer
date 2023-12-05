@@ -6,7 +6,8 @@ export default {
   name: 'Pessoa',
   data() {
     return {
-      nome: 'Pessoa top ó'
+      nome: 'Pessoa top ó',
+      emailDinamico: ['Emialdinamico@gmail.com', 'maisum@gmail.com']
     }
   },
   components: {
@@ -19,7 +20,7 @@ export default {
 <template>
   <div>
     <h1>{{ nome }}</h1>
-    <InfoVue />
+    <InfoVue :compEmail="emailDinamico" />
     <FormVue />
   </div>
 </template>

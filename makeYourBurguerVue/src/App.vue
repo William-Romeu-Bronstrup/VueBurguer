@@ -22,11 +22,11 @@ export default {
 
 <template>
   <div>
+    <PessoaVue />
     <HeaderVue />
     <PrimeiroComponenteVue />
     <LifeCycleVue />
     {{ teste }}
-    <PessoaVue />
   </div>
 </template>
 

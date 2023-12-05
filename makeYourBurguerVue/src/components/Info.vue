@@ -18,6 +18,9 @@ export default {
       toggleEmail: true
     }
   },
+  props: {
+    compEmail: ''
+  },
   methods: {
     hasknowledgeBack() {
       return this.hasknowledgeBack.length != 0
@@ -34,6 +37,11 @@ export default {
 
 <template>
   <div>
+    <h1>Emails:</h1>
+    <li v-for="email in compEmail" :key="email">
+      {{ email }}
+    </li>
+
     <p class="working" v-if="isWorking">Estou trabalhando no momento.</p>
     <p v-else>Em busca de novas oportunidades!</p>
 
