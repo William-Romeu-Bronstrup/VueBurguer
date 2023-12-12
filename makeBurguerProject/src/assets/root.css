@@ -16,4 +16,6 @@
   --color-error: #f87171;
   --color-error-hover: #ef4444;
   --color-black-80: rgba(0, 0, 0, 0.8);
+  --border-select-focus: #3b82f6;
+  --border-inputs: #ccc;
 }

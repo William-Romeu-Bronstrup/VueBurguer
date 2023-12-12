@@ -62,6 +62,27 @@ export default {
         console.log('Error inesperado:', error)
       }
     },
+    async updateBurger(event, id) {
+      const option = event.target.value
+
+      const dataJson = JSON.stringify({ status: option })
+
+      try {
+        const req = await fetch(`http://localhost:3000/burgers/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: dataJson
+        })
+
+        if (req.status === 200) {
+          this.getOrders()
+        }
+      } catch (error) {
+        console.log('Erro inesperado', error)
+      }
+    },
     lengthOfOrders() {
       return this?.orders.length
     },
@@ -77,7 +98,7 @@ export default {
         }
       })
 
-      return correctShow
+      return correctShow == '' ? 'Nenhum' : correctShow
     }
   },
   created() {
@@ -114,7 +135,7 @@ export default {
           <td>{{ burger.status }}</td>
           <td class="actions">
             <div>
-              <select name="" id="" class="select">
+              <select name="" id="" class="select" @change="updateBurger($event, burger.id)">
                 <option
                   v-for="sts in status"
                   :key="sts.id"
@@ -192,13 +213,17 @@ export default {
 }
 
 .select {
-  border: 2px solid #ccc;
+  border: 2px solid var(--border-inputs);
   border-radius: 4px;
   font-family: 'Poppins';
   font-weight: 500;
   outline: none;
   padding: 6px;
   width: minmax(100px, 100%);
+}
+
+.select:focus {
+  border: 2px solid var(--border-select-focus);
 }
 
 .option {

@@ -183,7 +183,7 @@ export default {
 
 .select {
   padding: 10px 8px;
-  border: 2px solid #ccc;
+  border: 2px solid var(--border-inputs);
   border-radius: 4px;
   font-family: 'Poppins';
   font-weight: 500;
@@ -191,7 +191,7 @@ export default {
 }
 
 .select:focus {
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--border-select-focus);
 }
 
 .option {

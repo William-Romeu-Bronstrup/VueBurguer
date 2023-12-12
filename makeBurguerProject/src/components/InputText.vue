@@ -25,7 +25,7 @@ export default {
   width: 100%;
   padding: 10px 8px;
   border-radius: 4px;
-  border: 2px solid #ccc;
+  border: 2px solid var(--border-inputs);
   outline: none;
   font-size: 14px;
   font-weight: 500;
@@ -33,6 +33,6 @@ export default {
 }
 
 .input:focus {
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--border-select-focus);
 }
 </style>

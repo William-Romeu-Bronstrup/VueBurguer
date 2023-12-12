@@ -17,7 +17,7 @@ export default {
 <style scoped>
 .select {
   padding: 10px 8px;
-  border: 2px solid #ccc;
+  border: 2px solid var(--border-inputs);
   border-radius: 4px;
   font-family: 'Poppins';
   font-weight: 500;
