@@ -2,6 +2,8 @@
   --background-header: #232123;
   --background-footer: #232123;
   --header-navigation-a: #fcba03;
+  --thead-color: #fcba03;
+  --thead-background: #232123;
   --white-color: #fff;
   --title-color: #222;
   --background-button-submit: #3b82f6;
@@ -9,4 +11,8 @@
   --background-disabled-button: #cbd5e1;
   --color-disabled-button: #f1f5f9;
   --background-message: #368ef1c4;
+  --table-background-even: #e2e8f0;
+  --table-background-odd: #f1f5f9;
+  --color-error: #f87171;
+  --color-black-80: rgba(0, 0, 0, 0.8);
 }
