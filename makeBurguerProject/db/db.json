@@ -54,11 +54,11 @@
         "tipo": "Tomate"
       },
       {
-        "id": 4,
+        "id": 5,
         "tipo": "Cebola roxa"
       },
       {
-        "id": 4,
+        "id": 6,
         "tipo": "Pepino"
       }
     ]
@@ -79,20 +79,12 @@
   ],
   "burgers": [
     {
-      "nome": "Matheus Battisti",
-      "carne": "Picanha",
-      "pao": "Italiano Branco",
-      "opcionais": ["Bacon", "Salame", "Cebola roxa"],
-      "status": "Finalizado",
-      "id": 1
-    },
-    {
-      "nome": "João Coelho",
+      "nome": "Clinte novo",
       "carne": "Maminha",
-      "pao": "3 Queijos",
-      "opcionais": ["Salame", "Cebola roxa"],
+      "pao": "Integral",
+      "opcionais": ["Cebola roxa", "Tomate"],
       "status": "Solicitado",
-      "id": 4
+      "id": 18
     }
   ]
 }

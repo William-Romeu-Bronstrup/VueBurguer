@@ -56,4 +56,13 @@ export default {
   height: 100vh;
   justify-content: space-between;
 }
+
+.spaceY {
+  margin: 40px 0px 15px 0px;
+}
+
+.labelInputs {
+  font-size: 16px;
+  font-weight: 500;
+}
 </style>

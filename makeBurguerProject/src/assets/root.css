@@ -4,4 +4,9 @@
   --header-navigation-a: #fcba03;
   --white-color: #fff;
   --title-color: #222;
+  --background-button-submit: #3b82f6;
+  --background-button-submit-hover: #2563eb;
+  --background-disabled-button: #cbd5e1;
+  --color-disabled-button: #f1f5f9;
+  --background-message: #368ef1c4;
 }
