@@ -3,6 +3,7 @@ import ButtonActionVue from './ButtonAction.vue'
 import ErrorMessageVue from './ErrorMessage.vue'
 
 // componente de confirmação
+// componente de mensagem
 
 export default {
   name: 'Dashboard',
@@ -15,7 +16,8 @@ export default {
       orders: [],
       requestOrders: 'loading',
       status: [],
-      requestStatus: 'loading'
+      requestStatus: 'loading',
+      deletedOrders: false
     }
   },
   methods: {
@@ -43,6 +45,23 @@ export default {
         this.requestStatus = 'failed'
       }
     },
+    async cancelOrder(burgerId) {
+      try {
+        const req = await fetch(`http://localhost:3000/burgers/${burgerId}`, {
+          method: 'DELETE'
+        })
+
+        if (req.status === 200) {
+          this.deletedOrders = true
+          this.getOrders()
+        } else {
+          this.deletedOrders = false
+        }
+      } catch (error) {
+        this.deletedOrders = false
+        console.log('Error inesperado:', error)
+      }
+    },
     lengthOfOrders() {
       return this?.orders.length
     },
@@ -61,7 +80,7 @@ export default {
       return correctShow
     }
   },
-  mounted() {
+  created() {
     this.getOrders()
     this.getStatus()
   }
@@ -94,18 +113,20 @@ export default {
           </td>
           <td>{{ burger.status }}</td>
           <td class="actions">
-            <select name="" id="" class="select">
-              <option
-                v-for="sts in status"
-                :key="sts.id"
-                :value="sts.tipo"
-                :selected="burger.status == sts.tipo"
-                class="option"
-              >
-                {{ sts.tipo }}
-              </option>
-            </select>
-            <ButtonActionVue text="Cancelar" />
+            <div>
+              <select name="" id="" class="select">
+                <option
+                  v-for="sts in status"
+                  :key="sts.id"
+                  :value="sts.tipo"
+                  :selected="burger.status == sts.tipo"
+                  class="option"
+                >
+                  {{ sts.tipo }}
+                </option>
+              </select>
+              <ButtonActionVue text="Cancelar" @action="this.cancelOrder(burger.id)" />
+            </div>
           </td>
         </tr>
       </tbody>
@@ -156,6 +177,11 @@ export default {
   text-align: center;
 }
 
+.tbody tr {
+  width: 100%;
+  background: green;
+}
+
 .tbody tr td {
   padding: 10px;
   color: var(--color-black-80);
@@ -172,7 +198,7 @@ export default {
   font-weight: 500;
   outline: none;
   padding: 6px;
-  width: fit-content;
+  width: minmax(100px, 100%);
 }
 
 .option {
@@ -181,10 +207,15 @@ export default {
 }
 
 .actions {
+  height: 55px;
+}
+
+.actions div {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 55px;
+  justify-content: center;
+  width: minmax(100px, 100%);
   gap: 5px;
+  height: 100%;
 }
 </style>

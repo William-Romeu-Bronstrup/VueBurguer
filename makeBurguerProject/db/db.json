@@ -82,41 +82,23 @@
       "nome": "Clinte novo",
       "carne": "Maminha",
       "pao": "Integral",
-      "opcionais": ["Cebola roxa", "Tomate"],
+      "opcionais": [
+        "Cebola roxa",
+        "Tomate"
+      ],
       "status": "Solicitado",
       "id": 18
     },
     {
-      "nome": "Novo clinete online",
-      "carne": "Picanha",
-      "pao": "Integral",
-      "opcionais": ["Cebola roxa", "Tomate"],
-      "status": "Finalizado",
-      "id": 19
-    },
-    {
-      "nome": "teste tlgd",
-      "carne": "Veggie burger",
-      "pao": "Parmesão e Orégano",
-      "opcionais": ["Pepino", "Cheddar", "Bacon"],
+      "nome": "Teste novamente",
+      "carne": "Alcatra",
+      "pao": "3 Queijos",
+      "opcionais": [
+        "Salame",
+        "Tomate"
+      ],
       "status": "Solicitado",
       "id": 20
-    },
-    {
-      "nome": "todes",
-      "carne": "Veggie burger",
-      "pao": "Parmesão e Orégano",
-      "opcionais": ["Bacon", "Cebola roxa", "Salame", "Tomate", "Cheddar", "Pepino"],
-      "status": "Solicitado",
-      "id": 21
-    },
-    {
-      "nome": "fodenadoseu sistema dksdsdosdkdosakdoasdkasodoakdoadkpasokdoakdopaskdopakdopskaodakspodkasdkoasdaskdopasdkoakdosakdoaskdoaskdpaskdoaskdopaskdosapkdkasodkoasdkaopdkakdoadkasdadadadsadasdad",
-      "carne": "Maminha",
-      "pao": "3 Queijos",
-      "opcionais": ["Bacon", "Salame", "Cebola roxa", "Pepino", "Tomate", "Cheddar"],
-      "status": "Solicitado",
-      "id": 22
     }
   ]
 }
