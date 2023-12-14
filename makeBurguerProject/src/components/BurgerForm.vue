@@ -4,10 +4,7 @@ import InputTextVue from './InputText.vue'
 import MessageVue from './Message.vue'
 import SelectVue from './Select.vue'
 
-import db from '../services/firebaseConfig.js'
-import { getDocs, collection } from 'firebase/firestore'
-
-console.log(db)
+import { db, getDocs, collection } from '../services/firebaseConfig.js'
 
 export default {
   name: 'BurguerForm',

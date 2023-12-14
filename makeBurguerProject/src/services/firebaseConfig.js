@@ -1,16 +1,20 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
+import { getDocs, collection } from 'firebase/firestore'
+
+const { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } =
+  import.meta.env
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBZM0RNyAC7WF1ZnGlCqgqyYXCh9C_j6y4',
-  authDomain: 'makeyourburger-d073d.firebaseapp.com',
-  projectId: 'makeyourburger-d073d',
-  storageBucket: 'makeyourburger-d073d.appspot.com',
-  messagingSenderId: '945043175679',
-  appId: '1:945043175679:web:24bcc5bf11bb7912b474ca'
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: 'makeyourburger-317af',
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID
 }
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
-export default db
+export { db, getDocs, collection }
