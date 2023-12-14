@@ -4,8 +4,7 @@ import InputTextVue from './InputText.vue'
 import MessageVue from './Message.vue'
 import SelectVue from './Select.vue'
 
-import { db, getDocs, collection } from '../services/firebaseConfig.js'
-import { collectionGroup } from 'firebase/firestore'
+import { db, getDocs, collection, addDoc } from '../services/firebaseConfig.js'
 
 export default {
   name: 'BurguerForm',
@@ -24,35 +23,56 @@ export default {
       selectedBread: '',
       selectedMeat: '',
       selectedOptions: [],
-      msgAfterOrder: ''
+      msgAfterOrder: '',
+      toogleClassMessage: '',
+      orderingBurger: false
     }
   },
   methods: {
     async createBurger(e) {
-      const data = {
-        nome: this.inputNameValue,
-        carne: this.selectedMeat,
-        pao: this.selectedBread,
-        opcionais: Array.from(this.selectedOptions),
-        status: 'Solicitado'
+      try {
+        this.orderingBurger = true
+
+        const data = {
+          nome: this.inputNameValue,
+          carne: this.selectedMeat,
+          pao: this.selectedBread,
+          opcionais: Array.from(this.selectedOptions),
+          status: 'Solicitado'
+        }
+
+        const docRef = await addDoc(collection(db, 'burgers'), data)
+
+        if (docRef.id) {
+          this.resetData()
+          this.msgAfterOrder = `Pedido realizado com sucesso!`
+          this.toogleClassMessage = 'success'
+          this.orderingBurger = false
+
+          setTimeout(() => {
+            this.msgAfterOrder = ''
+            this.toogleClassMessage = ''
+            this.orderingBurger = false
+          }, 3000)
+        } else {
+          this.msgAfterOrder = `Nem vai dar!`
+          this.toogleClassMessage = 'error'
+          this.orderingBurger = false
+
+          setTimeout(() => {
+            this.msgAfterOrder = ''
+            this.toogleClassMessage = ''
+          }, 3000)
+        }
+      } catch (error) {
+        this.msgAfterOrder = `Nem vai dar!`
+        this.toogleClassMessage = 'error'
+
+        setTimeout(() => {
+          this.msgAfterOrder = ''
+          this.toogleClassMessage = ''
+        }, 3000)
       }
-
-      const req = await fetch('http://localhost:3000/burgers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-
-      const res = await req.json()
-
-      this.resetData()
-      this.msgAfterOrder = `Pedido N° ${res.id} realizado com sucesso!`
-
-      setTimeout(() => {
-        this.msgAfterOrder = ''
-      }, 3000)
     },
     async getIngredients() {
       try {
@@ -82,19 +102,10 @@ export default {
       this.selectedBread = ''
       this.selectedMeat = ''
       this.selectedOptions = []
-    },
-    async getStatus() {
-      const usersCollection = collection(db, 'status')
-      const querySnapshot = await getDocs(usersCollection)
-
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${JSON.stringify(doc.data())}`)
-      })
     }
   },
   created() {
     this.getIngredients()
-    //this.getStatus()
   }
 }
 </script>
@@ -102,7 +113,7 @@ export default {
 <template>
   <div id="container">
     <div style="height: 30px">
-      <MessageVue msg="Pedido realizado com sucesso!" v-show="msgAfterOrder" />
+      <MessageVue :msg="msgAfterOrder" :class="toogleClassMessage" v-show="msgAfterOrder" />
     </div>
 
     <form @submit.prevent="createBurger($event)">
@@ -119,11 +130,6 @@ export default {
         </div>
         <div class="box">
           <label for="bread" class="labelInputs">Escolha um tipo de pão:</label>
-          <!-- <SelectVue
-          id="bread"
-          v-model:selectedBread="selectedBread"
-          v-model:breadOptions="breadOptions"
-        /> -->
           <select name="ChosedBread" id="bread" class="select" v-model="selectedBread" required>
             <option disabled value="">Selecione uma opção</option>
             <option
@@ -170,7 +176,9 @@ export default {
       <div class="submitButton">
         <ButtonSubmitVue
           text="Montar!"
-          :disabled="selectedBread && selectedMeat && inputNameValue ? 'false' : 'true'"
+          :disabled="
+            selectedBread && selectedMeat && inputNameValue && !orderingBurger ? false : true
+          "
         />
       </div>
     </form>

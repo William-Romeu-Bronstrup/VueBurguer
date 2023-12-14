@@ -3,6 +3,8 @@ import ButtonActionVue from './ButtonAction.vue'
 import ErrorMessageVue from './ErrorMessage.vue'
 import ModalVue from './Modal.vue'
 
+import { db, getDocs, collection, deleteDoc, doc, updateDoc } from '../services/firebaseConfig.js'
+
 export default {
   name: 'Dashboard',
   components: {
@@ -24,40 +26,30 @@ export default {
   methods: {
     async getOrders() {
       try {
-        const req = await fetch('http://localhost:3000/burgers')
+        const orders = getDocs(collection(db, 'burgers'))
 
-        if (req) {
-          this.orders = await req.json()
+        this.orders = []
+
+        Promise.all([orders]).then((values) => {
+          values[0].forEach((doc) => {
+            this.orders.push({
+              ...doc.data(),
+              id: doc.id
+            })
+          })
+
           this.requestOrders = 'loaded'
-        }
+        })
       } catch (error) {
         this.requestOrders = 'failed'
       }
     },
-    async getStatus() {
-      try {
-        const req = await fetch('http://localhost:3000/status')
-
-        if (req) {
-          this.status = await req.json()
-          this.requestStatus = 'loaded'
-        }
-      } catch (error) {
-        this.requestStatus = 'failed'
-      }
-    },
     async cancelOrder(burgerId) {
       try {
-        const req = await fetch(`http://localhost:3000/burgers/${burgerId}`, {
-          method: 'DELETE'
-        })
+        await deleteDoc(doc(db, 'burgers', `${burgerId}`))
 
-        if (req.status === 200) {
-          this.deletedOrders = true
-          this.getOrders()
-        } else {
-          this.deletedOrders = false
-        }
+        this.deletedOrders = true
+        this.getOrders()
       } catch (error) {
         this.deletedOrders = false
         console.log('Error inesperado:', error)
@@ -66,23 +58,23 @@ export default {
     async updateBurger(event, id) {
       const option = event.target.value
 
-      const dataJson = JSON.stringify({ status: option })
-
       try {
-        const req = await fetch(`http://localhost:3000/burgers/${id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: dataJson
+        await updateDoc(doc(db, 'burgers', `${id}`), {
+          status: option
         })
 
-        if (req.status === 200) {
-          this.getOrders()
-        }
+        this.getOrders()
       } catch (error) {
         console.log('Erro inesperado', error)
       }
+    },
+    async getStatus() {
+      const statusCollection = collection(db, 'status')
+      const getStatus = await getDocs(statusCollection)
+
+      getStatus.forEach((doc) => {
+        this.status.push(doc.data())
+      })
     },
     openModalToChoose(burgerId) {
       if (this.burgerIdToDelete == 0) {
@@ -132,7 +124,7 @@ export default {
             <div class="modalDetails">
               <h1>Tem certeza disso?</h1>
               <p>
-                Deseja cancelar o pedido N°{{ burgerIdToDelete }}?
+                Ao cancelar um pedido ele nunca voltará.
                 <span>Essa ação é irreversível!</span>
               </p>
             </div>
@@ -152,10 +144,10 @@ export default {
 
     <div v-if="lengthOfOrders() != 0">
       <p>Quantidade de pedidos: {{ lengthOfOrders() }}</p>
+
       <table class="table">
         <thead class="thead">
           <tr>
-            <th>ID</th>
             <th>Cliente</th>
             <th>Carne</th>
             <th>Pão</th>
@@ -164,9 +156,9 @@ export default {
             <th>Ações</th>
           </tr>
         </thead>
+
         <tbody class="tbody">
           <tr v-for="(burger, index) in orders" :key="burger.id">
-            <td>{{ burger.id }}</td>
             <td>{{ burger.nome }}</td>
             <td>{{ burger.carne }}</td>
             <td>{{ burger.pao }}</td>

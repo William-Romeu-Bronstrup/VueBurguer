@@ -6,7 +6,7 @@ export default {
 </script>
 
 <template>
-  <button type="submit" class="buttonSubmit" :disabled="disabled == 'true' ? true : false">
+  <button type="submit" class="buttonSubmit" :disabled="disabled">
     {{ text }}
   </button>
 </template>

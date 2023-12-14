@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { getDocs, collection } from 'firebase/firestore'
+import { getDocs, collection, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore'
 
 const { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } =
   import.meta.env
@@ -17,4 +17,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
-export { db, getDocs, collection }
+export { db, getDocs, collection, addDoc, deleteDoc, doc, updateDoc }
