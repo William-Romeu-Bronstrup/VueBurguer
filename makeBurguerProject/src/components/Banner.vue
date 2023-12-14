@@ -14,7 +14,7 @@ export default {
 #banner {
   background-image: url('/img/burger.jpg');
   background-repeat: no-repeat;
-  background-position: 0 -250px;
+  background-position: center center;
   background-size: cover;
   height: 500px;
   display: flex;

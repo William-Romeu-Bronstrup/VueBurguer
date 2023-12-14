@@ -77,17 +77,5 @@
       "tipo": "Finalizado"
     }
   ],
-  "burgers": [
-    {
-      "nome": "William Romeu Brönstrup",
-      "carne": "Maminha",
-      "pao": "3 Queijos",
-      "opcionais": [
-        "Salame",
-        "Tomate"
-      ],
-      "status": "Solicitado",
-      "id": 1
-    }
-  ]
+  "burgers": []
 }

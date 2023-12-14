@@ -3,8 +3,6 @@ import ButtonActionVue from './ButtonAction.vue'
 import ErrorMessageVue from './ErrorMessage.vue'
 import ModalVue from './Modal.vue'
 
-// componente de mensagem
-
 export default {
   name: 'Dashboard',
   components: {

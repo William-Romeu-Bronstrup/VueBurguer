@@ -5,6 +5,7 @@ import MessageVue from './Message.vue'
 import SelectVue from './Select.vue'
 
 import { db, getDocs, collection } from '../services/firebaseConfig.js'
+import { collectionGroup } from 'firebase/firestore'
 
 export default {
   name: 'BurguerForm',
@@ -55,12 +56,23 @@ export default {
     },
     async getIngredients() {
       try {
-        const req = await fetch('http://localhost:3000/ingredientes')
-        const data = await req.json()
+        const getMeats = getDocs(collection(db, 'options', 'ingredientes', 'carnes'))
+        const getBreads = getDocs(collection(db, 'options', 'ingredientes', 'paes'))
+        const getOptions = getDocs(collection(db, 'options', 'ingredientes', 'opcionais'))
 
-        this.breadOptions = data.paes
-        this.meatOptions = data.carnes
-        this.options = data.opcionais
+        Promise.all([getMeats, getBreads, getOptions]).then((values) => {
+          values[0].forEach((doc) => {
+            this.meatOptions.push(doc.data())
+          })
+
+          values[1].forEach((doc) => {
+            this.breadOptions.push(doc.data())
+          })
+
+          values[2].forEach((doc) => {
+            this.options.push(doc.data())
+          })
+        })
       } catch (error) {
         console.log('Error', error)
       }
@@ -80,10 +92,9 @@ export default {
       })
     }
   },
-  mounted() {
+  created() {
     this.getIngredients()
-
-    this.getStatus()
+    //this.getStatus()
   }
 }
 </script>
