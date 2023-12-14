@@ -79,34 +79,15 @@
   ],
   "burgers": [
     {
-      "nome": "Clinte novo",
+      "nome": "William Romeu Brönstrup",
       "carne": "Maminha",
-      "pao": "Integral",
-      "opcionais": [
-        "Cebola roxa",
-        "Tomate"
-      ],
-      "status": "Solicitado",
-      "id": 18
-    },
-    {
-      "nome": "Teste novamente",
-      "carne": "Alcatra",
       "pao": "3 Queijos",
       "opcionais": [
         "Salame",
         "Tomate"
       ],
       "status": "Solicitado",
-      "id": 20
-    },
-    {
-      "nome": "sim kkk",
-      "carne": "Maminha",
-      "pao": "Parmesão e Orégano",
-      "opcionais": [],
-      "status": "Solicitado",
-      "id": 21
+      "id": 1
     }
   ]
 }

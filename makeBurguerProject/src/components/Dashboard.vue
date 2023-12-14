@@ -1,15 +1,16 @@
 <script>
 import ButtonActionVue from './ButtonAction.vue'
 import ErrorMessageVue from './ErrorMessage.vue'
+import ModalVue from './Modal.vue'
 
-// componente de confirmação
 // componente de mensagem
 
 export default {
   name: 'Dashboard',
   components: {
     ErrorMessageVue,
-    ButtonActionVue
+    ButtonActionVue,
+    ModalVue
   },
   data() {
     return {
@@ -17,7 +18,9 @@ export default {
       requestOrders: 'loading',
       status: [],
       requestStatus: 'loading',
-      deletedOrders: false
+      deletedOrders: false,
+      openModal: false,
+      burgerIdToDelete: 0
     }
   },
   methods: {
@@ -83,6 +86,16 @@ export default {
         console.log('Erro inesperado', error)
       }
     },
+    openModalToChoose(burgerId) {
+      if (this.burgerIdToDelete == 0) {
+        this.burgerIdToDelete = burgerId
+        this.openModal = true
+      }
+    },
+    declineChoose() {
+      this.burgerIdToDelete = 0
+      this.openModal = false
+    },
     lengthOfOrders() {
       return this?.orders.length
     },
@@ -99,6 +112,10 @@ export default {
       })
 
       return correctShow == '' ? 'Nenhum' : correctShow
+    },
+    confirmDelete(burgerId) {
+      this.cancelOrder(burgerId)
+      this.declineChoose()
     }
   },
   created() {
@@ -110,51 +127,84 @@ export default {
 
 <template>
   <div class="container-table" v-if="requestOrders == 'loaded'">
-    <p>Quantidade de pedidos: {{ lengthOfOrders() }}</p>
-    <table class="table">
-      <thead class="thead">
-        <tr>
-          <th>ID</th>
-          <th>Cliente</th>
-          <th>Carne</th>
-          <th>Pão</th>
-          <th>Ingredientes</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody class="tbody">
-        <tr v-for="(burger, index) in orders" :key="burger.id">
-          <td>{{ burger.id }}</td>
-          <td>{{ burger.nome }}</td>
-          <td>{{ burger.carne }}</td>
-          <td>{{ burger.pao }}</td>
-          <td>
-            {{ options(index) }}
-          </td>
-          <td>{{ burger.status }}</td>
-          <td class="actions">
-            <div>
-              <select name="" id="" class="select" @change="updateBurger($event, burger.id)">
-                <option
-                  v-for="sts in status"
-                  :key="sts.id"
-                  :value="sts.tipo"
-                  :selected="burger.status == sts.tipo"
-                  class="option"
-                >
-                  {{ sts.tipo }}
-                </option>
-              </select>
-              <ButtonActionVue text="Cancelar" @action="this.cancelOrder(burger.id)" />
+    <Teleport to="body">
+      <Transition name="fade">
+        <ModalVue :open="openModal">
+          <template v-slot:section>
+            <div class="modalDetails">
+              <h1>Tem certeza disso?</h1>
+              <p>
+                Deseja cancelar o pedido N°{{ burgerIdToDelete }}?
+                <span>Essa ação é irreversível!</span>
+              </p>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+            <div class="confirmButtons">
+              <ButtonActionVue text="Cancelar" costumizedClass="cancel" @action="declineChoose" />
+              <ButtonActionVue
+                text="Confirmar"
+                costumizedClass="confirm"
+                @action="confirmDelete(burgerIdToDelete)"
+              />
+            </div>
+          </template>
+        </ModalVue>
+      </Transition>
+    </Teleport>
+
+    <div v-if="lengthOfOrders() != 0">
+      <p>Quantidade de pedidos: {{ lengthOfOrders() }}</p>
+      <table class="table">
+        <thead class="thead">
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Carne</th>
+            <th>Pão</th>
+            <th>Ingredientes</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody class="tbody">
+          <tr v-for="(burger, index) in orders" :key="burger.id">
+            <td>{{ burger.id }}</td>
+            <td>{{ burger.nome }}</td>
+            <td>{{ burger.carne }}</td>
+            <td>{{ burger.pao }}</td>
+            <td>
+              {{ options(index) }}
+            </td>
+            <td>{{ burger.status }}</td>
+            <td class="actions">
+              <div id="delimitedHeight">
+                <select class="select" @change="updateBurger($event, burger.id)">
+                  <option
+                    v-for="sts in status"
+                    :key="sts.id"
+                    :value="sts.tipo"
+                    :selected="burger.status == sts.tipo"
+                    class="option"
+                  >
+                    {{ sts.tipo }}
+                  </option>
+                </select>
+
+                <ButtonActionVue
+                  text="Cancelar"
+                  costumizedClass="cancel"
+                  @action="openModalToChoose(burger.id)"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p v-else class="msgWithOutOrders">Nenhum pedido feito ainda!</p>
   </div>
   <ErrorMessageVue msg="Falha em trazer os pedidos" v-else-if="requestOrders == 'failed'" />
-  <p v-else>Carregando kkkk</p>
+  <p v-else>Carregando</p>
 </template>
 
 <style scoped>
@@ -231,10 +281,6 @@ export default {
   font-weight: 500;
 }
 
-.actions {
-  height: 55px;
-}
-
 .actions div {
   display: flex;
   align-items: center;
@@ -242,5 +288,38 @@ export default {
   width: minmax(100px, 100%);
   gap: 5px;
   height: 100%;
+}
+
+#delimitedHeight {
+  height: 35px;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 10px;
+  height: 35px;
+}
+
+.modalDetails {
+  margin-bottom: 40px;
+}
+
+.modalDetails p {
+  font-weight: 600;
+  color: var(--color-subtitle);
+  font-size: 16px;
+}
+
+.modalDetails p span {
+  color: var(--color-error-hover);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.msgWithOutOrders {
+  text-align: center;
+  color: var(--color-subtitle);
+  font-size: 16px;
+  font-weight: 700;
 }
 </style>

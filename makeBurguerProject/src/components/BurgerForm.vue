@@ -4,6 +4,11 @@ import InputTextVue from './InputText.vue'
 import MessageVue from './Message.vue'
 import SelectVue from './Select.vue'
 
+import db from '../services/firebaseConfig.js'
+import { getDocs, collection } from 'firebase/firestore'
+
+console.log(db)
+
 export default {
   name: 'BurguerForm',
   components: {
@@ -26,8 +31,6 @@ export default {
   },
   methods: {
     async createBurger(e) {
-      console.log(this.inputNameValue, this.selectedBread, this.selectedMeat, this.selectedOptions)
-
       const data = {
         nome: this.inputNameValue,
         carne: this.selectedMeat,
@@ -70,10 +73,20 @@ export default {
       this.selectedBread = ''
       this.selectedMeat = ''
       this.selectedOptions = []
+    },
+    async getStatus() {
+      const usersCollection = collection(db, 'status')
+      const querySnapshot = await getDocs(usersCollection)
+
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${JSON.stringify(doc.data())}`)
+      })
     }
   },
   mounted() {
     this.getIngredients()
+
+    this.getStatus()
   }
 }
 </script>
