@@ -15,6 +15,7 @@ export default {
     :placeholder="placeholder"
     :value="modelValue"
     maxlength="200"
+    autocomplete="on"
     @input="$emit('update:modelValue', $event.target.value)"
     :required="required == 'true' ? true : false"
   />

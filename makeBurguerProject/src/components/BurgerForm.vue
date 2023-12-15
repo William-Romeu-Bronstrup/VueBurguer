@@ -4,7 +4,8 @@ import InputTextVue from './InputText.vue'
 import MessageVue from './Message.vue'
 import SelectVue from './Select.vue'
 
-import { db, getDocs, collection, addDoc } from '../services/firebaseConfig.js'
+import { db, auth, getDocs, collection, addDoc } from '../services/firebaseConfig.js'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export default {
   name: 'BurguerForm',
@@ -25,7 +26,8 @@ export default {
       selectedOptions: [],
       msgAfterOrder: '',
       toogleClassMessage: '',
-      orderingBurger: false
+      orderingBurger: false,
+      userId: ''
     }
   },
   methods: {
@@ -33,37 +35,46 @@ export default {
       try {
         this.orderingBurger = true
 
-        const data = {
-          nome: this.inputNameValue,
-          carne: this.selectedMeat,
-          pao: this.selectedBread,
-          opcionais: Array.from(this.selectedOptions),
-          status: 'Solicitado'
-        }
+        onAuthStateChanged(auth, async (e) => {
+          if (e?.uid) {
+            this.userId = e.uid
 
-        const docRef = await addDoc(collection(db, 'burgers'), data)
+            const data = {
+              nome: this.inputNameValue,
+              carne: this.selectedMeat,
+              pao: this.selectedBread,
+              opcionais: Array.from(this.selectedOptions),
+              status: 'Solicitado',
+              userId: this.userId
+            }
 
-        if (docRef.id) {
-          this.resetData()
-          this.msgAfterOrder = `Pedido realizado com sucesso!`
-          this.toogleClassMessage = 'success'
-          this.orderingBurger = false
+            const docRef = await addDoc(collection(db, 'burgers'), data)
 
-          setTimeout(() => {
-            this.msgAfterOrder = ''
-            this.toogleClassMessage = ''
-            this.orderingBurger = false
-          }, 3000)
-        } else {
-          this.msgAfterOrder = `Nem vai dar!`
-          this.toogleClassMessage = 'error'
-          this.orderingBurger = false
+            if (docRef.id) {
+              this.resetData()
+              this.msgAfterOrder = `Pedido realizado com sucesso!`
+              this.toogleClassMessage = 'success'
+              this.orderingBurger = false
 
-          setTimeout(() => {
-            this.msgAfterOrder = ''
-            this.toogleClassMessage = ''
-          }, 3000)
-        }
+              setTimeout(() => {
+                this.msgAfterOrder = ''
+                this.toogleClassMessage = ''
+                this.orderingBurger = false
+              }, 3000)
+            } else {
+              this.msgAfterOrder = `Nem vai dar!`
+              this.toogleClassMessage = 'error'
+              this.orderingBurger = false
+
+              setTimeout(() => {
+                this.msgAfterOrder = ''
+                this.toogleClassMessage = ''
+              }, 3000)
+            }
+          } else {
+            this.$router.push('/login')
+          }
+        })
       } catch (error) {
         this.msgAfterOrder = `Nem vai dar!`
         this.toogleClassMessage = 'error'

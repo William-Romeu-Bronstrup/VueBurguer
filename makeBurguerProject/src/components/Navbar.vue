@@ -1,7 +1,26 @@
 <script>
+import { signOut } from 'firebase/auth'
+import { auth } from '../services/firebaseConfig.js'
+import LogoutVue from './Logout.vue'
+
 export default {
   name: 'Navbar',
-  props: ['logo', 'alt']
+  props: ['logo', 'alt'],
+  data() {
+    return {
+      auth: auth
+    }
+  },
+  components: {
+    LogoutVue
+  },
+  methods: {
+    handleSignOut() {
+      signOut(this.auth).then(() => {
+        this.$router.push('/login')
+      })
+    }
+  }
 }
 </script>
 
@@ -19,6 +38,12 @@ export default {
         </li>
         <li>
           <RouterLink to="/pedidos" class="link">Pedidos</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/login" class="link">Login</RouterLink>
+        </li>
+        <li>
+          <LogoutVue @signOut="handleSignOut" />
         </li>
       </div>
     </ul>

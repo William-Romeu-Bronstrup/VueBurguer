@@ -1,6 +1,16 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { getDocs, collection, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore'
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+  query,
+  where
+} from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
 
 const { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID } =
   import.meta.env
@@ -8,7 +18,7 @@ const { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, A
 const firebaseConfig = {
   apiKey: API_KEY,
   authDomain: AUTH_DOMAIN,
-  projectId: 'makeyourburger-317af',
+  projectId: PROJECT_ID,
   storageBucket: STORAGE_BUCKET,
   messagingSenderId: MESSAGING_SENDER_ID,
   appId: APP_ID
@@ -16,5 +26,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
+const auth = getAuth(app)
 
-export { db, getDocs, collection, addDoc, deleteDoc, doc, updateDoc }
+export { db, auth, getDocs, collection, addDoc, deleteDoc, doc, updateDoc, query, where }

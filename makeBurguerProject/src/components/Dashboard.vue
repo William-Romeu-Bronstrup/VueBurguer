@@ -3,7 +3,18 @@ import ButtonActionVue from './ButtonAction.vue'
 import ErrorMessageVue from './ErrorMessage.vue'
 import ModalVue from './Modal.vue'
 
-import { db, getDocs, collection, deleteDoc, doc, updateDoc } from '../services/firebaseConfig.js'
+import {
+  db,
+  auth,
+  getDocs,
+  collection,
+  deleteDoc,
+  doc,
+  updateDoc,
+  query,
+  where
+} from '../services/firebaseConfig.js'
+import { onAuthStateChanged } from 'firebase/auth'
 
 export default {
   name: 'Dashboard',
@@ -26,19 +37,25 @@ export default {
   methods: {
     async getOrders() {
       try {
-        const orders = getDocs(collection(db, 'burgers'))
+        onAuthStateChanged(auth, async (e) => {
+          if (e?.uid) {
+            const orders = getDocs(query(collection(db, 'burgers'), where('userId', '==', e.uid)))
 
-        this.orders = []
+            this.orders = []
 
-        Promise.all([orders]).then((values) => {
-          values[0].forEach((doc) => {
-            this.orders.push({
-              ...doc.data(),
-              id: doc.id
+            Promise.all([orders]).then((values) => {
+              values[0].forEach((doc) => {
+                this.orders.push({
+                  ...doc.data(),
+                  id: doc.id
+                })
+              })
+
+              this.requestOrders = 'loaded'
             })
-          })
-
-          this.requestOrders = 'loaded'
+          } else {
+            this.$router.push('/login')
+          }
         })
       } catch (error) {
         this.requestOrders = 'failed'
@@ -168,7 +185,11 @@ export default {
             <td>{{ burger.status }}</td>
             <td class="actions">
               <div id="delimitedHeight">
-                <select class="select" @change="updateBurger($event, burger.id)">
+                <select
+                  name="statusOfOrders"
+                  class="select"
+                  @change="updateBurger($event, burger.id)"
+                >
                   <option
                     v-for="sts in status"
                     :key="sts.id"
