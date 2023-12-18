@@ -3,10 +3,14 @@ import ButtonActionVue from './ButtonAction.vue'
 import ErrorMessageVue from './ErrorMessage.vue'
 import ModalVue from './Modal.vue'
 
+import { onAuthStateChanged } from 'firebase/auth'
+import { toast } from 'vue3-toastify'
+
 import {
   db,
   auth,
   getDocs,
+  getDoc,
   collection,
   deleteDoc,
   doc,
@@ -14,7 +18,6 @@ import {
   query,
   where
 } from '../services/firebaseConfig.js'
-import { onAuthStateChanged } from 'firebase/auth'
 
 export default {
   name: 'Dashboard',
@@ -39,20 +42,23 @@ export default {
       try {
         onAuthStateChanged(auth, async (e) => {
           if (e?.uid) {
-            const orders = getDocs(query(collection(db, 'burgers'), where('userId', '==', e.uid)))
+            const orders = await getDocs(
+              query(collection(db, 'burgers'), where('userId', '==', e.uid))
+            )
 
             this.orders = []
 
-            Promise.all([orders]).then((values) => {
-              values[0].forEach((doc) => {
+            if (!orders.empty) {
+              orders.forEach((doc) => {
                 this.orders.push({
                   ...doc.data(),
                   id: doc.id
                 })
               })
+            }
 
-              this.requestOrders = 'loaded'
-            })
+            // If dont exist data there is a message 'Nenhum pedido feito ainda' on the screen
+            this.requestOrders = 'loaded'
           } else {
             this.$router.push('/login')
           }
@@ -63,10 +69,40 @@ export default {
     },
     async cancelOrder(burgerId) {
       try {
-        await deleteDoc(doc(db, 'burgers', `${burgerId}`))
+        onAuthStateChanged(auth, async (e) => {
+          if (e?.uid) {
+            const docRef = doc(db, 'burgers', `${burgerId}`)
+            const docData = await getDoc(doc(db, 'burgers', `${burgerId}`))
 
-        this.deletedOrders = true
-        this.getOrders()
+            if (docData.exists) {
+              const getData = docData.data()
+
+              if (getData.userId === e.uid) {
+                console.log('aui')
+
+                await deleteDoc(docRef)
+
+                toast.success('Pedido cancelado!', {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                  autoClose: 2000
+                })
+
+                this.deletedOrders = true
+                this.getOrders()
+              } else {
+                toast.error('Não foi possível cancelar o pedido!', {
+                  position: toast.POSITION.BOTTOM_RIGHT
+                })
+              }
+            } else {
+              toast.error('Pedido não encontrado!', {
+                position: toast.POSITION.BOTTOM_RIGHT
+              })
+            }
+          } else {
+            this.$router.push('/login')
+          }
+        })
       } catch (error) {
         this.deletedOrders = false
         console.log('Error inesperado:', error)
@@ -133,7 +169,7 @@ export default {
 </script>
 
 <template>
-  <div class="container-table" v-if="requestOrders == 'loaded'">
+  <div class="container" v-if="requestOrders == 'loaded'">
     <Teleport to="body">
       <Transition name="fade">
         <ModalVue :open="openModal">
@@ -159,7 +195,7 @@ export default {
       </Transition>
     </Teleport>
 
-    <div v-if="lengthOfOrders() != 0">
+    <div v-if="lengthOfOrders() != 0" class="container-table">
       <p>Quantidade de pedidos: {{ lengthOfOrders() }}</p>
 
       <table class="table">
@@ -219,10 +255,15 @@ export default {
 </template>
 
 <style scoped>
+.container {
+  overflow-y: auto;
+  margin-top: 25px;
+}
+
 .container-table {
   overflow-y: auto;
-  min-height: 100px;
-  margin-top: 25px;
+  height: fit-content;
+  max-height: 370px;
 }
 
 .table {
@@ -313,6 +354,10 @@ export default {
 
 .modalDetails {
   margin-bottom: 40px;
+}
+
+.modalDetails h1 {
+  margin-bottom: 5px;
 }
 
 .modalDetails p {

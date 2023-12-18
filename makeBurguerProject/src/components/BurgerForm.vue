@@ -1,19 +1,19 @@
 <script>
 import ButtonSubmitVue from './ButtonSubmit.vue'
 import InputTextVue from './InputText.vue'
-import MessageVue from './Message.vue'
 import SelectVue from './Select.vue'
 
 import { db, auth, getDocs, collection, addDoc } from '../services/firebaseConfig.js'
-import { onAuthStateChanged } from 'firebase/auth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+
+import { toast } from 'vue3-toastify'
 
 export default {
   name: 'BurguerForm',
   components: {
     InputTextVue,
     SelectVue,
-    ButtonSubmitVue,
-    MessageVue
+    ButtonSubmitVue
   },
   data() {
     return {
@@ -24,7 +24,6 @@ export default {
       selectedBread: '',
       selectedMeat: '',
       selectedOptions: [],
-      msgAfterOrder: '',
       toogleClassMessage: '',
       orderingBurger: false,
       userId: ''
@@ -33,56 +32,54 @@ export default {
   methods: {
     async createBurger(e) {
       try {
+        const auth = getAuth()
+
         this.orderingBurger = true
 
-        onAuthStateChanged(auth, async (e) => {
-          if (e?.uid) {
-            this.userId = e.uid
+        if (auth.currentUser != null) {
+          this.userId = auth.currentUser.uid
 
-            const data = {
-              nome: this.inputNameValue,
-              carne: this.selectedMeat,
-              pao: this.selectedBread,
-              opcionais: Array.from(this.selectedOptions),
-              status: 'Solicitado',
-              userId: this.userId
-            }
+          const valided = this.validForm(this.inputNameValue, this.selectedBread, this.selectedMeat)
 
-            const docRef = await addDoc(collection(db, 'burgers'), data)
+          if (!valided) return
 
-            if (docRef.id) {
-              this.resetData()
-              this.msgAfterOrder = `Pedido realizado com sucesso!`
-              this.toogleClassMessage = 'success'
-              this.orderingBurger = false
-
-              setTimeout(() => {
-                this.msgAfterOrder = ''
-                this.toogleClassMessage = ''
-                this.orderingBurger = false
-              }, 3000)
-            } else {
-              this.msgAfterOrder = `Nem vai dar!`
-              this.toogleClassMessage = 'error'
-              this.orderingBurger = false
-
-              setTimeout(() => {
-                this.msgAfterOrder = ''
-                this.toogleClassMessage = ''
-              }, 3000)
-            }
-          } else {
-            this.$router.push('/login')
+          const data = {
+            nome: this.inputNameValue,
+            carne: this.selectedMeat,
+            pao: this.selectedBread,
+            opcionais: Array.from(this.selectedOptions),
+            status: 'Solicitado',
+            userId: this.userId
           }
-        })
-      } catch (error) {
-        this.msgAfterOrder = `Nem vai dar!`
-        this.toogleClassMessage = 'error'
 
-        setTimeout(() => {
-          this.msgAfterOrder = ''
-          this.toogleClassMessage = ''
-        }, 3000)
+          const docRef = await addDoc(collection(db, 'burgers'), data)
+
+          if (docRef.id) {
+            toast.success('Pedido realizado com sucesso!', {
+              autoClose: 2000,
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
+
+            this.resetData()
+            this.orderingBurger = false
+          } else {
+            toast.error('Ocorreu um erro ao processar seu pedido!', {
+              autoClose: 2000,
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
+
+            this.orderingBurger = false
+          }
+        } else {
+          this.$router.push('/login')
+        }
+      } catch (error) {
+        toast.error('Ocorreu um erro inesperado!', {
+          autoClose: 2000,
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+
+        this.orderingBurger = false
       }
     },
     async getIngredients() {
@@ -113,6 +110,45 @@ export default {
       this.selectedBread = ''
       this.selectedMeat = ''
       this.selectedOptions = []
+    },
+    validForm(name, bread, meat) {
+      if (name == '' || name == undefined || name == null) {
+        toast.error('Insira um nome válido!', {
+          autoClose: 2000,
+          limit: 1,
+          multiple: false
+        })
+
+        this.orderingBurger = false
+
+        return false
+      }
+
+      if (bread.trim() == '' || bread == undefined || bread == null) {
+        toast.error('Insira um pão válido!', {
+          autoClose: 2000,
+          limit: 1,
+          multiple: false
+        })
+
+        this.orderingBurger = false
+
+        return false
+      }
+
+      if (meat.trim() == '' || meat == undefined || meat == null) {
+        toast.error('Insira um pão válido!', {
+          autoClose: 2000,
+          limit: 1,
+          multiple: false
+        })
+
+        this.orderingBurger = false
+
+        return false
+      }
+
+      return true
     }
   },
   created() {
@@ -123,11 +159,7 @@ export default {
 
 <template>
   <div id="container">
-    <div style="height: 30px">
-      <MessageVue :msg="msgAfterOrder" :class="toogleClassMessage" v-show="msgAfterOrder" />
-    </div>
-
-    <form @submit.prevent="createBurger($event)">
+    <form method="POST" autocomplete="on" @submit.prevent="createBurger($event)">
       <div id="burgerForm">
         <div class="box">
           <label for="name" class="labelInputs">Nome do cliente:</label>
