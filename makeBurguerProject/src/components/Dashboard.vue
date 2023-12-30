@@ -34,87 +34,96 @@ export default {
       requestStatus: 'loading',
       deletedOrders: false,
       openModal: false,
-      burgerIdToDelete: 0
+      burgerIdToDelete: 0,
+      userId: 0
     }
   },
   methods: {
     async getOrders() {
       try {
-        onAuthStateChanged(auth, async (e) => {
-          if (e?.uid) {
-            const orders = await getDocs(
-              query(collection(db, 'burgers'), where('userId', '==', e.uid))
-            )
+        if (this.isUserLogged) {
+          this.userId = this.isUserLogged
 
-            this.orders = []
+          const orders = await getDocs(
+            query(collection(db, 'burgers'), where('userId', '==', this.userId))
+          )
 
-            if (!orders.empty) {
-              orders.forEach((doc) => {
-                this.orders.push({
-                  ...doc.data(),
-                  id: doc.id
-                })
+          this.orders = []
+
+          if (!orders.empty) {
+            orders.forEach((doc) => {
+              this.orders.push({
+                ...doc.data(),
+                id: doc.id
               })
-            }
-
-            // If dont exist data there is a message 'Nenhum pedido feito ainda' on the screen
-            this.requestOrders = 'loaded'
-          } else {
-            this.$router.push('/login')
+            })
           }
-        })
+
+          // If dont exist data there is a message 'Nenhum pedido feito ainda' on the screen
+          this.requestOrders = 'loaded'
+        } else {
+          this.$router.push('/login')
+        }
       } catch (error) {
         this.requestOrders = 'failed'
       }
     },
     async cancelOrder(burgerId) {
       try {
-        onAuthStateChanged(auth, async (e) => {
-          if (e?.uid) {
-            const docRef = doc(db, 'burgers', `${burgerId}`)
-            const docData = await getDoc(doc(db, 'burgers', `${burgerId}`))
+        if (this.isUserLogged) {
+          this.userId = this.isUserLogged
 
-            if (docData.exists) {
-              const getData = docData.data()
+          const docRef = doc(db, 'burgers', `${burgerId}`)
+          const docData = await getDoc(doc(db, 'burgers', `${burgerId}`))
 
-              if (getData.userId === e.uid) {
-                console.log('aui')
+          if (docData.exists) {
+            const getData = docData.data()
 
-                await deleteDoc(docRef)
+            if (getData.userId === this.userId) {
+              await deleteDoc(docRef)
 
-                toast.success('Pedido cancelado!', {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                  autoClose: 2000
-                })
+              toast.success('Pedido cancelado!', {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                autoClose: 2000
+              })
 
-                this.deletedOrders = true
-                this.getOrders()
-              } else {
-                toast.error('Não foi possível cancelar o pedido!', {
-                  position: toast.POSITION.BOTTOM_RIGHT
-                })
-              }
+              this.deletedOrders = true
+              this.getOrders()
             } else {
-              toast.error('Pedido não encontrado!', {
+              toast.error('Não foi possível cancelar o pedido!', {
                 position: toast.POSITION.BOTTOM_RIGHT
               })
             }
           } else {
-            this.$router.push('/login')
+            toast.error('Pedido não encontrado!', {
+              position: toast.POSITION.BOTTOM_RIGHT
+            })
           }
-        })
+        } else {
+          this.$router.push('/login')
+        }
       } catch (error) {
         this.deletedOrders = false
         console.log('Error inesperado:', error)
       }
     },
     async updateBurger(event, id) {
-      const option = event.target.value
-
       try {
-        await updateDoc(doc(db, 'burgers', `${id}`), {
-          status: option
-        })
+        const option = event.target.value
+
+        const docRef = doc(db, 'burgers', `${id}`)
+
+        const docData = await getDoc(docRef)
+
+        if (docData.exists) {
+          const getData = docData.data()
+
+          if (getData.userId === this.userId) {
+            await updateDoc(docRef, {
+              status: option
+            })
+          }
+        }
 
         this.getOrders()
       } catch (error) {
@@ -164,6 +173,12 @@ export default {
   created() {
     this.getOrders()
     this.getStatus()
+  },
+  computed: {
+    isUserLogged() {
+      const { uid } = this.$store.getters.getAuth || false
+      return uid
+    }
   }
 }
 </script>

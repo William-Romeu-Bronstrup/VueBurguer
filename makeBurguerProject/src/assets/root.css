@@ -18,8 +18,10 @@
   --color-confirm: #10b981;
   --color-confirm-hover: #059669;
   --color-black-80: rgba(0, 0, 0, 0.8);
+  --color-black-90: rgba(0, 0, 0, 0.9);
   --border-select-focus: #3b82f6;
   --border-inputs: #ccc;
   --shadow-modal: rgba(0, 0, 0, 0.33);
   --color-subtitle: #a1a1aa;
+  --color-loginGoogle: #1e3050;
 }

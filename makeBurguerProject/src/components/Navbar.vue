@@ -1,24 +1,23 @@
 <script>
-import { signOut } from 'firebase/auth'
-import { auth } from '../services/firebaseConfig.js'
 import LogoutVue from './Logout.vue'
+import ProfileVue from './Profile.vue'
 
 export default {
   name: 'Navbar',
   props: ['logo', 'alt'],
-  data() {
-    return {
-      auth: auth
-    }
-  },
   components: {
-    LogoutVue
+    LogoutVue,
+    ProfileVue
   },
   methods: {
     handleSignOut() {
-      signOut(this.auth).then(() => {
-        this.$router.push('/login')
-      })
+      this.$store.commit('signOut')
+      this.$router.push('/login')
+    }
+  },
+  computed: {
+    getUserData() {
+      return this.$store.getters.getAuth
     }
   }
 }
@@ -27,20 +26,25 @@ export default {
 <template>
   <nav>
     <ul id="groupNav">
-      <li>
-        <RouterLink to="/">
-          <img :src="logo" :alt="alt" id="logo" />
-        </RouterLink>
-      </li>
+      <div class="container-loggedUser">
+        <li>
+          <RouterLink to="/">
+            <img :src="logo" :alt="alt" id="logo" />
+          </RouterLink>
+        </li>
+        <li class="box-loggedUser">
+          <ProfileVue v-if="getUserData" :userData="getUserData" />
+        </li>
+      </div>
       <div id="groupLinks">
         <li>
-          <RouterLink to="/" class="link">Home</RouterLink>
+          <RouterLink active-class="active" to="/" class="link">Home</RouterLink>
         </li>
         <li>
-          <RouterLink to="/pedidos" class="link">Pedidos</RouterLink>
+          <RouterLink active-class="active" to="/pedidos" class="link">Pedidos</RouterLink>
         </li>
         <li>
-          <RouterLink to="/login" class="link">Login</RouterLink>
+          <RouterLink active-class="active" to="/login" class="link">Login</RouterLink>
         </li>
         <li>
           <LogoutVue @signOut="handleSignOut" />
@@ -57,6 +61,17 @@ export default {
   justify-content: space-between;
 }
 
+.container-loggedUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.box-loggedUser {
+  background-color: var(--white-color);
+  border-radius: 2px;
+}
+
 #groupLinks {
   display: flex;
   align-items: center;
@@ -64,8 +79,8 @@ export default {
 }
 
 #logo {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
 }
 
 .link {
@@ -77,5 +92,9 @@ export default {
   cursor: pointer;
   color: var(--white-color);
   transition: color 200ms;
+}
+
+.active {
+  color: var(--white-color);
 }
 </style>

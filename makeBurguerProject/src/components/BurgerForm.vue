@@ -4,7 +4,6 @@ import InputTextVue from './InputText.vue'
 import SelectVue from './Select.vue'
 
 import { db, auth, getDocs, collection, addDoc } from '../services/firebaseConfig.js'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 import { toast } from 'vue3-toastify'
 
@@ -26,54 +25,63 @@ export default {
       selectedOptions: [],
       toogleClassMessage: '',
       orderingBurger: false,
-      userId: ''
+      userId: '',
+      auth: null
     }
   },
   methods: {
     async createBurger(e) {
       try {
-        const auth = getAuth()
-
         this.orderingBurger = true
 
-        if (auth.currentUser != null) {
-          this.userId = auth.currentUser.uid
-
-          const valided = this.validForm(this.inputNameValue, this.selectedBread, this.selectedMeat)
-
-          if (!valided) return
-
-          const data = {
-            nome: this.inputNameValue,
-            carne: this.selectedMeat,
-            pao: this.selectedBread,
-            opcionais: Array.from(this.selectedOptions),
-            status: 'Solicitado',
-            userId: this.userId
-          }
-
-          const docRef = await addDoc(collection(db, 'burgers'), data)
-
-          if (docRef.id) {
-            toast.success('Pedido realizado com sucesso!', {
-              autoClose: 2000,
-              position: toast.POSITION.BOTTOM_RIGHT
-            })
-
-            this.resetData()
-            this.orderingBurger = false
-          } else {
-            toast.error('Ocorreu um erro ao processar seu pedido!', {
-              autoClose: 2000,
-              position: toast.POSITION.BOTTOM_RIGHT
-            })
-
-            this.orderingBurger = false
-          }
+        if (this.isUserLogged) {
+          this.userId = this.isUserLogged
         } else {
+          toast.error('Precisa estar logado para fazer um pedido!', {
+            autoClose: 2000,
+            position: toast.POSITION.BOTTOM_RIGHT,
+            limit: 1,
+            multiple: false
+          })
+
+          this.orderingBurger = false
           this.$router.push('/login')
         }
+
+        const valided = this.validForm(this.inputNameValue, this.selectedBread, this.selectedMeat)
+
+        if (!valided) return
+
+        const data = {
+          nome: this.inputNameValue,
+          carne: this.selectedMeat,
+          pao: this.selectedBread,
+          opcionais: Array.from(this.selectedOptions),
+          status: 'Solicitado',
+          userId: this.userId
+        }
+
+        const docRef = await addDoc(collection(db, 'burgers'), data)
+
+        if (docRef.id) {
+          toast.success('Pedido realizado com sucesso!', {
+            autoClose: 2000,
+            position: toast.POSITION.BOTTOM_RIGHT
+          })
+
+          this.resetData()
+          this.orderingBurger = false
+        } else {
+          toast.error('Ocorreu um erro ao processar seu pedido!', {
+            autoClose: 2000,
+            position: toast.POSITION.BOTTOM_RIGHT
+          })
+
+          this.orderingBurger = false
+        }
       } catch (error) {
+        console.log(error)
+
         toast.error('Ocorreu um erro inesperado!', {
           autoClose: 2000,
           position: toast.POSITION.BOTTOM_RIGHT
@@ -153,6 +161,12 @@ export default {
   },
   created() {
     this.getIngredients()
+  },
+  computed: {
+    isUserLogged() {
+      const { uid } = this.$store.getters.getAuth || false
+      return uid
+    }
   }
 }
 </script>

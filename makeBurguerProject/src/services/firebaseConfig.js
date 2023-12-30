@@ -11,7 +11,7 @@ import {
   query,
   where
 } from 'firebase/firestore'
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -23,7 +23,21 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
 const auth = getAuth(app)
+const db = getFirestore(app)
 
-export { db, auth, getDocs, getDoc, collection, addDoc, deleteDoc, doc, updateDoc, query, where }
+export {
+  db,
+  auth,
+  onAuthStateChanged,
+  signOut,
+  getDocs,
+  getDoc,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  updateDoc,
+  query,
+  where
+}

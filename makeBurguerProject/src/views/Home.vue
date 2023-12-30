@@ -7,6 +7,11 @@ export default {
   components: {
     BannerVue,
     BurgerFormVue
+  },
+  computed: {
+    isUserLogged() {
+      return this.$store.getters.getAuth
+    }
   }
 }
 </script>
@@ -17,9 +22,10 @@ export default {
       <h1 class="homeTitle">Make Your Burguer</h1>
     </BannerVue>
 
-    <h1 class="title spaceY">Monte o seu burger</h1>
+    <h1 class="title spaceY" v-if="isUserLogged">Monte o seu burger</h1>
+    <h1 class="title spaceY" v-else>Faça o login para fazer seu pedido!</h1>
 
-    <BurgerFormVue />
+    <BurgerFormVue v-if="isUserLogged" />
   </div>
 </template>
 

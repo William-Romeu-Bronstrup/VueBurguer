@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import Home from '../views/Home.vue'
-import { auth } from '@/services/firebaseConfig'
-import { onAuthStateChanged } from 'firebase/auth'
+
+import { verifyCurrentLogin } from '@/helpers/verifyLogin'
+import { toast } from 'vue3-toastify'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,10 +11,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Home,
-      meta: {
-        requiresAuth: true
-      }
+      component: Home
     },
     {
       path: '/login',
@@ -26,30 +25,28 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue')
     }
   ]
 })
 
-const getCurrentUser = () => {
-  return new Promise((resolve, reject) => {
-    const removeListener = onAuthStateChanged(
-      auth,
-      (user) => {
-        removeListener()
-        resolve(user)
-      },
-      reject
-    )
-  })
-}
-
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (await getCurrentUser()) {
+    if (await verifyCurrentLogin()) {
       next()
     } else {
-      alert('You dont have access!!')
-      next('/login')
+      toast.error('Você não tem permissão!', {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 2000,
+        limit: 1,
+        multiple: false
+      })
+
+      return next('/login')
     }
   } else {
     next()
