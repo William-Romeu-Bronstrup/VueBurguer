@@ -1,14 +1,14 @@
 <script>
 export default {
   name: 'InputText',
-  props: ['id', 'placeholder', 'name', 'modelValue', 'required'],
+  props: ['type', 'id', 'placeholder', 'name', 'modelValue', 'required'],
   emits: ['update:modelValue']
 }
 </script>
 
 <template>
   <input
-    type="text"
+    :type="type || 'text'"
     class="input"
     :name="name"
     :id="id"
@@ -22,18 +22,7 @@ export default {
 </template>
 
 <style scoped>
-.input {
-  width: 100%;
-  padding: 10px 8px;
-  border-radius: 4px;
-  border: 2px solid var(--border-inputs);
-  outline: none;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: 'Poppins';
-}
-
-.input:focus {
-  border: 2px solid var(--border-select-focus);
+.error-input {
+  border: 2px solid var(--color-error-hover);
 }
 </style>

@@ -12,7 +12,8 @@ export default {
     ButtonActionVue
   },
   props: {
-    statusLogin: Object
+    statusLogin: Object,
+    isLogging: Boolean
   },
   data() {
     return {
@@ -26,9 +27,6 @@ export default {
 
       signInWithPopup(auth, provider)
         .then((result) => {
-          //const credential = GoogleAuthProvider.credentialFromResult(result)
-          //const token = credential.accessToken
-
           this.logging = false
           this.$store.commit('currentLogin', result.user)
 
@@ -54,10 +52,6 @@ export default {
 
           this.logging = false
         })
-    },
-    handleSignOut() {
-      this.$store.commit('signOut')
-      this.$router.push('/login')
     }
   }
 }
@@ -67,26 +61,13 @@ export default {
   <div class="container-button">
     <ButtonActionVue
       :text="statusLogin ? 'Trocar de conta' : 'Logar com o Google'"
-      :disabled="logging"
+      :disabled="logging || isLogging"
       costumizedClass="google"
       costumizedIconClass="googleIcon"
       @action="signInWithGoogle"
     >
       <template #icon>
         <font-awesome-icon :icon="['fab', 'google']" class="googleIcon" />
-      </template>
-    </ButtonActionVue>
-
-    <ButtonActionVue
-      v-if="statusLogin"
-      text="Sair"
-      :disabled="logging"
-      costumizedClass="signOut"
-      costumizedIconClass="signOutIcon"
-      @action="handleSignOut"
-    >
-      <template #icon>
-        <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" size="lg" />
       </template>
     </ButtonActionVue>
   </div>
@@ -100,10 +81,6 @@ export default {
 }
 
 .googleIcon {
-  font-size: 20px;
-}
-
-.signOutIcon {
   font-size: 20px;
 }
 </style>

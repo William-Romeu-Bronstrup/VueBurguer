@@ -24,4 +24,6 @@
   --shadow-modal: rgba(0, 0, 0, 0.33);
   --color-subtitle: #a1a1aa;
   --color-loginGoogle: #1e3050;
+  --color-navigation: rgb(87, 87, 255);
+  --color-navigation-hover: rgb(69, 69, 202);
 }

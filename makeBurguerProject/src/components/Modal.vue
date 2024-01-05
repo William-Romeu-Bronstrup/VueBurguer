@@ -1,9 +1,6 @@
 <script>
 export default {
   name: 'Modal',
-  data() {
-    return {}
-  },
   props: ['open']
 }
 </script>

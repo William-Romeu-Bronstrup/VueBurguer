@@ -11,7 +11,7 @@ import {
   query,
   where
 } from 'firebase/firestore'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -30,6 +30,7 @@ export {
   db,
   auth,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   signOut,
   getDocs,
   getDoc,

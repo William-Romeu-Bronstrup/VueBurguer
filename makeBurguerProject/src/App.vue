@@ -65,4 +65,30 @@ export default {
   font-size: 16px;
   font-weight: 500;
 }
+
+.input {
+  width: 100%;
+  padding: 10px 8px;
+  border-radius: 4px;
+  border: 2px solid var(--border-inputs);
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Poppins';
+}
+
+.input:focus {
+  border: 2px solid var(--border-select-focus);
+}
+
+.navigationLink {
+  color: var(--color-navigation);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.navigationLink:hover {
+  color: var(--color-navigation-hover);
+  transition: color 250ms;
+}
 </style>
