@@ -2,7 +2,7 @@
 import ButtonActionVue from '../components/ButtonAction.vue'
 
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { auth } from '../services/firebaseConfig.js'
+import { auth, db, addDoc, collection } from '../services/firebaseConfig.js'
 
 import { toast } from 'vue3-toastify'
 
@@ -25,8 +25,16 @@ export default {
       const provider = new GoogleAuthProvider()
       this.logging = true
 
+      let user = null
+
       signInWithPopup(auth, provider)
-        .then((result) => {
+        .then(async (result) => {
+          const saveUser = await addDoc(collection(db, 'users'), {
+            email: result.user.email,
+            uid: result.user.uid,
+            userType: 'common'
+          })
+
           this.logging = false
           this.$store.commit('currentLogin', result.user)
 

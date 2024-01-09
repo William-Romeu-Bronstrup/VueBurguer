@@ -14,7 +14,8 @@ export default {
       email: '',
       password: '',
       isLogging: false,
-      userEmail: ''
+      userEmail: '',
+      messageError: ''
     }
   },
   components: {
@@ -23,34 +24,19 @@ export default {
     LoginFormVue
   },
   methods: {
-    signWithEmailAndPassword() {
-      signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
-          this.$store.commit('currentLogin', userCredential.user)
-
-          toast.success('Login realizado com sucesso!', {
-            autoClose: 2000,
-            position: toast.POSITION.BOTTOM_RIGHT
-          })
-        })
-        .catch((error) => {
-          const errorCode = error.code
-          const errorMessage = error.message
-
-          console.log(error)
-        })
-    },
     isLoggingMethod(status) {
       this.isLogging = status
+    },
+    handleError(errorName) {
+      this.messageError = errorName
     }
   },
   computed: {
     IsUserLogged() {
-      const { email } = this.$store.getters.getAuth || ''
-
-      this.userEmail = email
-
       return this.$store.getters.getAuth
+    },
+    hasMessageError() {
+      return this.messageError.length != 0 ? true : false
     }
   }
 }
@@ -59,11 +45,16 @@ export default {
 <template>
   <div class="main-container">
     <div class="box">
-      <h1>
+      <h1 :class="{ hasError: hasMessageError, withOutError: !hasMessageError }">
         {{ IsUserLogged ? `Você está autenticado!` : 'Escolha sua forma de login' }}
       </h1>
 
-      <LoginFormVue @isLogging="isLoggingMethod" v-if="!IsUserLogged" />
+      <div class="error" v-if="messageError">
+        <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
+        <span>{{ messageError }}</span>
+      </div>
+
+      <LoginFormVue @isLogging="isLoggingMethod" @error="handleError" v-if="!IsUserLogged" />
 
       <div class="others-box" v-if="!IsUserLogged">
         <div class="sides"></div>
@@ -76,7 +67,7 @@ export default {
         <SignOutVue :statusLogin="IsUserLogged" v-if="IsUserLogged" />
       </div>
 
-      <span class="withoutAccount"
+      <span v-if="!IsUserLogged" class="withoutAccount"
         >Sem conta ainda?
         <RouterLink class="navigationLink" to="/register-account"
           >Então crie a sua! <font-awesome-icon :icon="['fas', 'circle-arrow-right']" /></RouterLink
@@ -87,10 +78,10 @@ export default {
 
 <style scoped>
 .main-container {
-  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 15px 0px;
 }
 
 .box {
@@ -111,8 +102,28 @@ export default {
 
 .box h1 {
   color: var(--color-black-80);
-  margin-bottom: 40px;
   font-family: 'Poppins';
+}
+
+.hasError {
+  margin-bottom: 0px;
+}
+
+.withOutError {
+  margin-bottom: 25px;
+}
+
+.error {
+  background-color: var(--color-error);
+  color: var(--white-color);
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0px 10px 0px;
 }
 
 .buttons {
@@ -150,5 +161,23 @@ export default {
   margin: 12px 0px 0px 0px;
   color: var(--color-black-90);
   font-weight: 600;
+}
+
+@media (min-width: 401px) {
+  .box {
+    width: 50vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .box {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 700px) {
+  .box h1 {
+    font-size: 20px;
+  }
 }
 </style>

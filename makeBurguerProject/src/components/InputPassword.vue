@@ -33,7 +33,7 @@ export default {
       :required="required"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
-      class="input"
+      class="input spaceX"
     />
 
     <font-awesome-icon
@@ -48,6 +48,10 @@ export default {
 <style scoped>
 .box-password {
   position: relative;
+}
+
+.spaceX {
+  padding-right: 40px;
 }
 
 #icon-eye {

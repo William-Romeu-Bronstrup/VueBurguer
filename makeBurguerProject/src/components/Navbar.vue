@@ -18,6 +18,9 @@ export default {
   computed: {
     getUserData() {
       return this.$store.getters.getAuth
+    },
+    userHasPermission() {
+      return this.$store.getters.permissionUser
     }
   }
 }
@@ -35,6 +38,9 @@ export default {
         <li class="box-loggedUser">
           <ProfileVue v-if="getUserData" :userData="getUserData" />
         </li>
+        <li v-if="userHasPermission">ADMIN</li>
+        <li v-else-if="userHasPermission == false">COMUM</li>
+        <li v-else>Nem está logado</li>
       </div>
       <div id="groupLinks">
         <li>

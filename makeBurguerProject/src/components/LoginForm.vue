@@ -13,8 +13,7 @@ export default {
     return {
       email: '',
       password: '',
-      waitUserLogin: false,
-      messageError: ''
+      waitUserLogin: false
     }
   },
   components: {
@@ -22,17 +21,17 @@ export default {
     InputPasswordVue,
     ButtonSubmitVue
   },
-  emits: ['isLogging'],
+  emits: ['isLogging', 'error'],
   methods: {
     signWithEmailAndPassword() {
       this.waitUserLogin = true
       this.$emit('isLogging', true)
-      this.messageError = ''
 
       try {
         signInWithEmailAndPassword(auth, this.email, this.password)
           .then((userCredential) => {
             this.$store.commit('currentLogin', userCredential.user)
+            this.$emit('error', '')
 
             toast.success('Login realizado com sucesso!', {
               autoClose: 2000,
@@ -43,7 +42,7 @@ export default {
             const errorCode = error.code
 
             if (errorCode == 'auth/invalid-credential') {
-              this.messageError = 'Credenciais inválidas!'
+              this.$emit('error', 'Credenciais inválidas!')
             }
           })
       } finally {
@@ -74,11 +73,6 @@ export default {
     @submit.prevent="signWithEmailAndPassword"
     class="container-form"
   >
-    <div class="error" v-if="messageError">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
-      <span>{{ messageError }}</span>
-    </div>
-
     <div class="box">
       <label for="emailId" class="labelInputs">Email:</label>
       <InputTextVue
@@ -120,17 +114,5 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.error {
-  background-color: var(--color-error);
-  color: var(--white-color);
-  padding: 8px;
-  border-radius: 4px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 </style>

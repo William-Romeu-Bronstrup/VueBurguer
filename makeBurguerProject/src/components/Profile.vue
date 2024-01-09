@@ -1,14 +1,20 @@
 <script>
 export default {
   name: 'Profile',
-  props: ['userData']
+  props: ['userData'],
+  data() {
+    return {
+      pathDefaultImage: '/img/user.png'
+    }
+  }
 }
 </script>
 
 <template>
   <div class="container-profile">
     <figure class="container-photo">
-      <img :src="userData.photoURL" :alt="userData.displayName" />
+      <img v-if="userData.photoURL" :src="userData.photoURL" :alt="userData.displayName" />
+      <img v-else :src="pathDefaultImage" alt="Imagem padrão" />
     </figure>
 
     <div class="details-user">
