@@ -3,10 +3,6 @@ import LoginWithGoogleVue from '../components/LoginWithGoogle.vue'
 import SignOutVue from '../components/SignOut.vue'
 import LoginFormVue from '../components/LoginForm.vue'
 
-import { auth, signInWithEmailAndPassword } from '../services/firebaseConfig.js'
-
-import { toast } from 'vue3-toastify'
-
 export default {
   name: 'Login',
   data() {
@@ -163,7 +159,7 @@ export default {
   font-weight: 600;
 }
 
-@media (min-width: 401px) {
+@media (max-width: 1000px) {
   .box {
     width: 50vw;
   }

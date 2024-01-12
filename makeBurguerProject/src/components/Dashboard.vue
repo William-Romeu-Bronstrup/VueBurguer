@@ -104,7 +104,6 @@ export default {
         }
       } catch (error) {
         this.deletedOrders = false
-        console.log('Error inesperado:', error)
       }
     },
     async updateBurger(event, id) {

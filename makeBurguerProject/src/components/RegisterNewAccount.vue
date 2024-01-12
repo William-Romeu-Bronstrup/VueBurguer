@@ -5,7 +5,6 @@ import ButtonSubmitVue from './ButtonSubmit.vue'
 
 import { auth, db, addDoc, collection } from '@/services/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-
 import { toast } from 'vue3-toastify'
 
 export default {
@@ -16,7 +15,8 @@ export default {
       email: '',
       password: '',
       waitUserLogin: false,
-      errors: []
+      errors: [],
+      whichUserType: ''
     }
   },
   components: {
@@ -60,21 +60,11 @@ export default {
             })
           }
 
-          // Preciso salvar esse usuário em uma coleção users
-          // Quando o usuário fazer o login eu preciso verificar nessa users para ver sua permissão
-          // Deixo essa permissão em um getter no main.js
-          // Quando eu precisa apenas verifico o valor desse getter
-          // Um admin somente cria outro admin
-          // CUSTOM USER -> Meus Pedidos
-          // ADMIN -> Pedidos
-
           this.resetData()
           this.$router.push('/login')
         })
         .catch((error) => {
-          console.log(error)
-
-          if (errorMessage.includes('email-already-in-use')) {
+          if (error?.code?.includes('email-already-in-use')) {
             this.errors.push('Email já cadastrado.')
             this.$emit('errorHandler', this.errors)
           } else {
@@ -209,6 +199,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+}
+
+.checkBoxAdmin {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 </style>

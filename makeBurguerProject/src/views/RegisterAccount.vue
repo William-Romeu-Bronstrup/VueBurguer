@@ -30,7 +30,7 @@ export default {
 <template>
   <div class="center">
     <div class="box">
-      <h1 class="titleNewAccount" :class="{ space: !existErros }">Crie sua conta!</h1>
+      <h1 class="titleNewAccount" :class="{ space: !existErros }">Crie uma conta!</h1>
 
       <div class="errors" v-if="existErros">
         <ul class="gap-erros">

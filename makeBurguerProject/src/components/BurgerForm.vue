@@ -80,8 +80,6 @@ export default {
           this.orderingBurger = false
         }
       } catch (error) {
-        console.log(error)
-
         toast.error('Ocorreu um erro inesperado!', {
           autoClose: 2000,
           position: toast.POSITION.BOTTOM_RIGHT

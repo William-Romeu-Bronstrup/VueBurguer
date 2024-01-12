@@ -9,26 +9,48 @@ export default {
     LogoutVue,
     ProfileVue
   },
+  data() {
+    return {
+      sidebar: false,
+      screenWidth: 0
+    }
+  },
+  mounted() {
+    this.updateScreenWidth()
+    this.onScreenResize()
+  },
   methods: {
     handleSignOut() {
       this.$store.commit('signOut')
       this.$router.push('/login')
+    },
+    toogleSideBar() {
+      this.sidebar = !this.sidebar
+    },
+    onScreenResize() {
+      window.addEventListener('resize', () => {
+        this.updateScreenWidth()
+      })
+    },
+    updateScreenWidth() {
+      this.screenWidth = window.innerWidth
+
+      if (this.screenWidth > 600 && this.sidebar) {
+        this.sidebar = false
+      }
     }
   },
   computed: {
     getUserData() {
       return this.$store.getters.getAuth
-    },
-    userHasPermission() {
-      return this.$store.getters.permissionUser
     }
   }
 }
 </script>
 
 <template>
-  <nav>
-    <ul id="groupNav">
+  <nav id="transition">
+    <ul class="groupNav">
       <div class="container-loggedUser">
         <li>
           <RouterLink to="/">
@@ -38,9 +60,6 @@ export default {
         <li class="box-loggedUser">
           <ProfileVue v-if="getUserData" :userData="getUserData" />
         </li>
-        <li v-if="userHasPermission">ADMIN</li>
-        <li v-else-if="userHasPermission == false">COMUM</li>
-        <li v-else>Nem está logado</li>
       </div>
       <div id="groupLinks">
         <li>
@@ -55,16 +74,73 @@ export default {
         <li>
           <LogoutVue @signOut="handleSignOut" />
         </li>
+        <figure>
+          <img
+            id="menuIcon"
+            src="/img/menu.png"
+            alt="Imagem representando o menu com três barrinhas pretas em sequência"
+            width="40px"
+            height="40px"
+            @click="toogleSideBar"
+          />
+        </figure>
       </div>
     </ul>
+
+    <div v-if="sidebar" :class="{ sidebar: sidebar }" class="close">
+      <figure class="closeBox">
+        <img
+          id="menuIcon"
+          src="/img/closeMenu.png"
+          alt="Imagem representando o menu com três barrinhas pretas em sequência"
+          width="25px"
+          height="25px"
+          @click="toogleSideBar"
+        />
+      </figure>
+
+      <ul class="groupNavMobile">
+        <li>
+          <RouterLink active-class="active" to="/" class="link">Home</RouterLink>
+        </li>
+        <li>
+          <RouterLink active-class="active" to="/pedidos" class="link">Pedidos</RouterLink>
+        </li>
+        <li>
+          <RouterLink active-class="active" to="/login" class="link">Login</RouterLink>
+        </li>
+        <li class="boxLoggedUserMobile">
+          <ProfileVue v-if="getUserData" :userData="getUserData" />
+        </li>
+        <li>
+          <LogoutVue @signOut="handleSignOut" />
+        </li>
+      </ul>
+    </div>
   </nav>
 </template>
 
 <style scoped>
-#groupNav {
+.groupNav {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.groupNavMobile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.closeBox {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding: 14px 16px 0px;
 }
 
 .container-loggedUser {
@@ -102,5 +178,63 @@ export default {
 
 .active {
   color: var(--white-color);
+}
+
+.boxLoggedUserMobile {
+  background-color: var(--white-color);
+}
+
+#menuIcon {
+  display: none;
+}
+
+.close {
+  animation: fadeOut 0.3s ease;
+  width: 0px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-height: 100vh;
+  background-color: var(--background-header);
+  animation: fadeIn 0.3s ease;
+  width: 250px;
+}
+
+@keyframes fadeIn {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 250px;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    width: 250px;
+  }
+  to {
+    width: 0px;
+  }
+}
+
+@media (max-width: 600px) {
+  #groupLinks li {
+    display: none;
+  }
+
+  #menuIcon {
+    display: block;
+  }
+
+  .box-loggedUser {
+    display: none;
+  }
 }
 </style>
