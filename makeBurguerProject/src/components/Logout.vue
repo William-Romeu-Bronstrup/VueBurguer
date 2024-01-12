@@ -6,7 +6,7 @@ export default {
 </script>
 
 <template>
-  <button class="buttonSignOut" @click="$emit('signOut')">
+  <button class="buttonSignOut" @click="$emit('signOut')" aria-label="Deslogar / Sair">
     <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" size="lg" />
   </button>
 </template>

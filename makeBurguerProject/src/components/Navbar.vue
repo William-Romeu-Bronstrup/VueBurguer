@@ -50,30 +50,32 @@ export default {
 
 <template>
   <nav id="transition">
-    <ul class="groupNav">
-      <div class="container-loggedUser">
+    <div class="groupNav">
+      <ul class="container-loggedUser">
         <li>
           <RouterLink to="/">
-            <img :src="logo" :alt="alt" id="logo" />
+            <img :src="logo" :alt="alt" id="logo" width="128px" height="128px" />
           </RouterLink>
         </li>
         <li class="box-loggedUser">
           <ProfileVue v-if="getUserData" :userData="getUserData" />
         </li>
-      </div>
-      <div id="groupLinks">
-        <li>
-          <RouterLink active-class="active" to="/" class="link">Home</RouterLink>
-        </li>
-        <li>
-          <RouterLink active-class="active" to="/pedidos" class="link">Pedidos</RouterLink>
-        </li>
-        <li>
-          <RouterLink active-class="active" to="/login" class="link">Login</RouterLink>
-        </li>
-        <li>
-          <LogoutVue @signOut="handleSignOut" />
-        </li>
+      </ul>
+      <div>
+        <ul id="groupLinks">
+          <li>
+            <RouterLink active-class="active" to="/" class="link">Home</RouterLink>
+          </li>
+          <li>
+            <RouterLink active-class="active" to="/pedidos" class="link">Pedidos</RouterLink>
+          </li>
+          <li>
+            <RouterLink active-class="active" to="/login" class="link">Login</RouterLink>
+          </li>
+          <li>
+            <LogoutVue @signOut="handleSignOut" />
+          </li>
+        </ul>
         <figure>
           <img
             id="menuIcon"
@@ -85,7 +87,7 @@ export default {
           />
         </figure>
       </div>
-    </ul>
+    </div>
 
     <div v-if="sidebar" :class="{ sidebar: sidebar }" class="close">
       <figure class="closeBox">

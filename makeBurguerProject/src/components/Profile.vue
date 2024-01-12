@@ -14,7 +14,7 @@ export default {
   <div class="container-profile">
     <figure class="container-photo">
       <img v-if="userData.photoURL" :src="userData.photoURL" :alt="userData.displayName" />
-      <img v-else :src="pathDefaultImage" alt="Imagem padrão" />
+      <img v-else :src="pathDefaultImage" alt="Imagem padrão" width="64px" height="40px" />
     </figure>
 
     <div class="details-user">
@@ -48,7 +48,7 @@ export default {
 .details-user span {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-subtitle);
+  color: #595959;
 }
 
 .container-photo {

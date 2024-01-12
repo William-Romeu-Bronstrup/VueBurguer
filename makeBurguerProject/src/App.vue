@@ -2,6 +2,8 @@
 import NavbarVue from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
 
+import { SpeedInsights } from '@vercel/speed-insights/vue'
+
 export default {
   components: {
     NavbarVue,

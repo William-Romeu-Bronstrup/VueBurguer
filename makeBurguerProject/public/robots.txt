@@ -1,0 +1,5 @@
+User-agent: AdsBot-Google and Mediapartners-Google and Mediapartners-Google and AdsBot-Google-Mobile and Googlebot-Video
+Disallow: /
+
+user-agent: *
+allow: /
