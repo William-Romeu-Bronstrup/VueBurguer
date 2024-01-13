@@ -13,5 +13,5 @@ Podendo também criar uma conta e fazer o login com email e senha.
 
 ## 📦 Tecnologias usadas:
 
-<img width="40" height="30" alt="VUE JS" src="https://github.com/devicons/devicon/blob/master/icons/vuejs/vuejs-original.svg">
-<img width="40" height="30" alt="Firebase" src="https://github.com/devicons/devicon/blob/master/icons/firebase/firebase-plain-wordmark.svg">
+<img width="40" height="30" alt="VUE JS" src="https://github.com/devicons/devicon/blob/master/icons/vuejs/vuejs-original.svg"> VUE JS
+<img width="40" height="30" alt="Firebase" src="https://github.com/devicons/devicon/blob/master/icons/firebase/firebase-plain-wordmark.svg"> Firebase
