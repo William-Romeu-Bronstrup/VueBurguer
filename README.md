@@ -11,6 +11,8 @@ ou até cancelar o pedido.
 Fui além e fiz uma integração com o firebase usando o firestore e a autenticação pelo provedor do google.
 Podendo também criar uma conta e fazer o login com email e senha.
 
+<a target="_blank" href="https://make-your-burguer-chi.vercel.app/"> Confira o projeto aqui.</a>
+
 ## 📦 Tecnologias usadas:
 
 <img width="40" height="30" alt="VUE JS" src="https://github.com/devicons/devicon/blob/master/icons/vuejs/vuejs-original.svg">
