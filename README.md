@@ -4,10 +4,6 @@
   <img alt="Imagem da logo do projeto" src="makeBurguerProject/public/img/logo_github.png" width="100%">
 </p>
 
-<p align="center">
-  <img alt="Imagem da logo do projeto" src="/img/logo_github.png" width="100%">
-</p>
-
 O projeto foi desenvolvido com base nos materiais do <a href="https://youtu.be/wsAQQioPIJs?si=AHC8uNCCc93DPm65" target="_blank"> Matheus Battist </a> no youtube.
 
 ## 🔥 Introdução
@@ -28,3 +24,17 @@ Podendo também criar uma conta e fazer o login com email e senha.
 - Git e Github
 - Vue 3
 - Firebase firestore e authentication
+
+- ## :rocket: Como executar
+- 
+```
+  git https://github.com/William-Romeu-Bronstrup/VueBurguer.git
+
+  cd makeBurguerProject
+  npm i
+  npm run dev
+```
+
+## :memo: Licença
+
+Esse projeto está sob a licença MIT.
