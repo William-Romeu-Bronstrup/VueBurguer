@@ -26,7 +26,7 @@ Podendo também criar uma conta e fazer o login com email e senha.
 - Firebase firestore e authentication
 
 - ## :rocket: Como executar
-- 
+  
 ```
   git https://github.com/William-Romeu-Bronstrup/VueBurguer.git
 
@@ -34,6 +34,12 @@ Podendo também criar uma conta e fazer o login com email e senha.
   npm i
   npm run dev
 ```
+
+<p align="center">
+  <img alt="Imagem da tela de login" src="makeBurguerProject/public/img/login_github.png" width="100%">
+  <img alt="Imagem da tela de criar uma conta" src="makeBurguerProject/public/img/criarConta_github.png" width="100%">
+  <img alt="Imagem da tela de pedidos" src="makeBurguerProject/public/img/pedidos_github.png" width="100%">
+</p>
 
 ## :memo: Licença
 
